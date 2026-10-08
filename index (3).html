@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f3ede1">
+<title>Her Top 13</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Homemade+Apple&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f3ede1;
+    --paper-2: #ece4d4;
+    --card: #fbf8f1;
+    --ink: #2f2a24;
+    --faded: #a89a85;
+    --label: #8a7c68;
+    --rust: #8b5a3c;
+    --rule: #dfd4bf;
+    --margin: #d19a8a;
+    --leaf: #8d8a64;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; }
+  body {
+    background-color: var(--paper);
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(255,255,255,.55), transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(160,130,90,.10), transparent 45%);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 19px;
+    line-height: 1.35;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 28px 18px 130px; }
+
+  .label { font-family: "Special Elite", monospace; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--label); }
+  .title { font-family: "Cormorant Garamond", Georgia, serif; font-style: italic; font-weight: 500; font-size: 42px; line-height: 1.02; margin: 8px 0 0; }
+  .title.huge { font-size: 56px; }
+  .hand { font-family: "Homemade Apple", cursive; color: var(--rust); font-size: 14px; line-height: 1.9; display: inline-block; transform: rotate(-2deg); }
+  .type { font-family: "Special Elite", monospace; font-size: 14px; }
+  .muted { color: var(--label); }
+  p { margin: 12px 0; }
+
+  .tape {
+    display: inline-block; padding: 3px 12px; margin-top: 10px;
+    background: color-mix(in srgb, var(--c, #c9b48f) 30%, transparent);
+    transform: rotate(-1.5deg);
+    font-family: "Special Elite", monospace; font-size: 12px; letter-spacing: .08em; color: var(--ink);
+  }
+
+  /* intro steps */
+  .steps { list-style: none; padding: 0; margin: 26px 0; }
+  .steps li { display: grid; grid-template-columns: 42px 1fr; gap: 6px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .steps .num { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 26px; color: var(--rust); line-height: 1; }
+  .steps b { display: block; font-weight: 500; font-size: 21px; }
+  .steps span { color: var(--label); font-size: 17px; }
+
+  /* journal lines */
+  .lines { position: relative; padding-left: 40px; margin-top: 18px; }
+  .lines::before { content: ""; position: absolute; left: 30px; top: 0; bottom: 0; width: 1px; background: var(--margin); }
+  .group-label { padding: 22px 0 6px; }
+  .group-label:first-child { padding-top: 4px; }
+  .line {
+    display: block; width: 100%; text-align: left; border: 0; background: none; cursor: pointer;
+    font: inherit; font-size: 21px; color: var(--ink);
+    padding: 9px 4px 8px; border-bottom: 1px solid var(--rule); position: relative;
+  }
+  .line .txt { position: relative; }
+  .line small { font-family: "Special Elite", monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--label); margin-left: 8px; }
+  .line .mark {
+    position: absolute; left: -36px; top: 50%; width: 24px; height: 24px; margin-top: -12px;
+    color: var(--rust); opacity: 0; transform: scale(.4) rotate(-20deg);
+    transition: opacity .2s ease, transform .3s cubic-bezier(.3,1.6,.5,1);
+  }
+  .line.on .mark { opacity: 1; transform: scale(1) rotate(-8deg); }
+  .line.on .txt { background: linear-gradient(transparent 62%, rgba(139,90,60,.16) 62%, rgba(139,90,60,.16) 92%, transparent 92%); }
+  .line .txt::after {
+    content: ""; position: absolute; left: -5px; right: -5px; top: 56%; height: 2px; background: var(--rust);
+    transform: scaleX(0) rotate(-1.5deg); transform-origin: left center; transition: transform .28s ease;
+  }
+  .line.cut { color: var(--faded); }
+  .line.cut .txt::after { transform: scaleX(1) rotate(-1.5deg); }
+
+  /* buttons + dock */
+  button { font: inherit; }
+  .btn {
+    font-family: "Special Elite", monospace; font-size: 14px; letter-spacing: .04em;
+    border: 1px solid var(--ink); background: transparent; color: var(--ink);
+    padding: 11px 16px; cursor: pointer; transition: transform .1s ease, opacity .2s ease, background .2s ease;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn.solid { background: var(--ink); color: var(--paper); }
+  .btn.quiet { border-color: transparent; color: var(--label); padding-left: 4px; padding-right: 4px; text-decoration: underline; text-underline-offset: 3px; }
+  .btn[disabled] { opacity: .3; cursor: default; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .dock {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+    background: color-mix(in srgb, var(--paper) 94%, transparent);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    border-top: 1px solid var(--rule);
+    padding: 12px 18px calc(12px + env(safe-area-inset-bottom));
+  }
+  .dock .inner { max-width: 560px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .count { font-family: "Special Elite", monospace; font-size: 14px; color: var(--label); text-align: center; }
+  .count b { font-family: "Cormorant Garamond", serif; font-size: 24px; font-weight: 500; color: var(--ink); margin-right: 4px; }
+
+  .progress { display: flex; gap: 5px; margin: 14px 0 20px; }
+  .progress i { flex: 1; height: 3px; background: var(--rule); transition: background .3s ease; }
+  .progress i.done { background: var(--rust); }
+
+  /* duel */
+  .duel { display: grid; gap: 10px; margin-top: 22px; }
+  .card {
+    position: relative; border: 0; text-align: left; cursor: pointer; color: var(--ink);
+    background: var(--card); padding: 30px 22px 22px; min-height: 140px;
+    background-image: linear-gradient(var(--margin), var(--margin)), repeating-linear-gradient(transparent 0 31px, #ebe2d0 31px 32px);
+    background-size: 100% 1px, 100% 100%; background-position: 0 22px, 0 23px; background-repeat: no-repeat, repeat;
+    box-shadow: 0 1px 2px rgba(60,40,20,.12), 0 10px 22px -14px rgba(60,40,20,.45);
+    transition: transform .35s cubic-bezier(.3,1.3,.5,1), opacity .3s ease, box-shadow .3s ease;
+  }
+  .card:nth-of-type(1) { transform: rotate(-1.2deg); }
+  .card:nth-of-type(2) { transform: rotate(1deg); }
+  .card .pin { position: absolute; top: -8px; left: 50%; width: 54px; height: 18px; margin-left: -27px; background: color-mix(in srgb, var(--c) 35%, transparent); transform: rotate(-3deg); }
+  .card .t { font-style: italic; font-weight: 500; font-size: 30px; line-height: 1.08; }
+  .card .a { font-family: "Special Elite", monospace; font-size: 12px; letter-spacing: .08em; color: var(--label); margin-top: 10px; text-transform: uppercase; }
+  .card.won { transform: translateY(-8px) scale(1.03) rotate(0deg); box-shadow: 0 2px 4px rgba(60,40,20,.15), 0 18px 30px -14px rgba(60,40,20,.5); }
+  .card.lost { opacity: 0; transform: translateY(14px) rotate(6deg); }
+  .card.won::after { content: "this one"; position: absolute; right: 16px; bottom: 10px; font-family: "Homemade Apple", cursive; color: var(--rust); font-size: 13px; transform: rotate(-6deg); }
+  .or { text-align: center; font-family: "Homemade Apple", cursive; color: var(--rust); font-size: 14px; }
+  details.peek { margin-top: 30px; }
+  details.peek summary { cursor: pointer; font-family: "Special Elite", monospace; font-size: 13px; color: var(--label); }
+
+  /* results */
+  .final { list-style: none; padding: 0; margin: 20px 0 26px; }
+  .final li { display: grid; grid-template-columns: 46px 1fr; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--rule); opacity: 0; animation: ink-in .6s ease forwards; }
+  .final .n { font-family: "Homemade Apple", cursive; color: var(--rust); font-size: 16px; }
+  .final .t { font-size: 23px; font-weight: 500; }
+  .final li:first-child .t { font-style: italic; font-size: 28px; }
+  .final .a { font-family: "Special Elite", monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--label); margin-top: 2px; }
+  .final.small li { padding: 4px 0; opacity: 1; animation: none; }
+  .final.small .t { font-size: 18px; font-style: normal; }
+  @keyframes ink-in { from { opacity: 0; transform: translateX(-6px); filter: blur(2px); } to { opacity: 1; transform: none; filter: none; } }
+
+  /* screen transitions */
+  #app.leave-next { animation: leave-next .2s ease forwards; }
+  #app.leave-back { animation: leave-back .2s ease forwards; }
+  #app.enter-next { animation: enter-next .35s ease both; }
+  #app.enter-back { animation: enter-back .35s ease both; }
+  #app.enter-soft { animation: enter-soft .35s ease both; }
+  @keyframes leave-next { to { opacity: 0; transform: translateX(-28px) rotate(-.6deg); } }
+  @keyframes leave-back { to { opacity: 0; transform: translateX(28px) rotate(.6deg); } }
+  @keyframes enter-next { from { opacity: 0; transform: translateX(28px) rotate(.6deg); } }
+  @keyframes enter-back { from { opacity: 0; transform: translateX(-28px) rotate(-.6deg); } }
+  @keyframes enter-soft { from { opacity: 0; transform: translateY(8px); } }
+
+  /* chapter page-turn */
+  .chapter { position: fixed; inset: 0; z-index: 50; perspective: 1800px; display: none; }
+  .chapter.show { display: block; }
+  .sheet {
+    position: absolute; inset: 0; transform-origin: left center; backface-visibility: hidden;
+    background-color: var(--paper-2);
+    background-image: radial-gradient(circle at 70% 20%, rgba(255,255,255,.5), transparent 45%), linear-gradient(90deg, rgba(90,60,30,.12), transparent 6%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 32px;
+    box-shadow: -8px 0 30px rgba(60,40,20,.25);
+  }
+  .chapter.in .sheet { animation: turn-in .75s cubic-bezier(.25,.8,.3,1) both; }
+  .chapter.out .sheet { animation: turn-out .7s cubic-bezier(.6,0,.8,.5) both; }
+  @keyframes turn-in { from { transform: rotateY(85deg); filter: brightness(.85); } to { transform: rotateY(0); filter: none; } }
+  @keyframes turn-out { to { transform: rotateY(-95deg); filter: brightness(.8); } }
+  .sheet .sprig { width: 46px; margin-bottom: 18px; opacity: 0; animation: ink-in .8s .45s ease forwards; }
+  .sheet .hand { margin-top: 18px; opacity: 0; animation: ink-in .8s .7s ease forwards; }
+  .sheet .skip { position: absolute; bottom: calc(24px + env(safe-area-inset-bottom)); font-family: "Special Elite", monospace; font-size: 12px; color: var(--label); letter-spacing: .1em; }
+
+  .toast { position: fixed; left: 50%; bottom: 96px; transform: translate(-50%, 8px); z-index: 60; background: var(--ink); color: var(--paper); font-family: "Special Elite", monospace; font-size: 13px; padding: 9px 14px; opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none; max-width: calc(100% - 36px); text-align: center; }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0ms !important; transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div class="dock" id="dock" hidden><div class="inner" id="dockInner"></div></div>
+<div class="chapter" id="chapter"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ---------- Song catalog ----------
+// Re-recorded albums use the Taylor's Version tracklists (originals counted once).
+const ALBUMS = [
+  { name: "Taylor Swift", year: 2006, c: "#2e8b78", songs: [
+    "Tim McGraw","Picture to Burn","Teardrops on My Guitar","A Place in This World","Cold as You","The Outside",
+    "Tied Together with a Smile","Stay Beautiful","Should've Said No","Mary's Song (Oh My My My)","Our Song",
+    "I'm Only Me When I'm with You","Invisible","A Perfectly Good Heart"]},
+  { name: "Fearless (Taylor's Version)", year: 2008, c: "#c9a14a", songs: [
+    "Fearless","Fifteen","Love Story","Hey Stephen","White Horse","You Belong with Me","Breathe","Tell Me Why",
+    "You're Not Sorry","The Way I Loved You","Forever & Always","The Best Day","Change","Jump Then Fall",
+    "Untouchable","Come In with the Rain","Superstar","The Other Side of the Door","Today Was a Fairytale"],
+    vault: ["You All Over Me","Mr. Perfectly Fine","We Were Happy","That's When","Don't You","Bye Bye Baby"]},
+  { name: "Speak Now (Taylor's Version)", year: 2010, c: "#8e4fa0", songs: [
+    "Mine","Sparks Fly","Back to December","Speak Now","Dear John","Mean","The Story of Us","Never Grow Up",
+    "Enchanted","Better Than Revenge","Innocent","Haunted","Last Kiss","Long Live","Ours","Superman"],
+    vault: ["Electric Touch","When Emma Falls in Love","I Can See You","Castles Crumbling","Foolish One","Timeless"]},
+  { name: "Red (Taylor's Version)", year: 2012, c: "#b3262f", songs: [
+    "State of Grace","Red","Treacherous","I Knew You Were Trouble","All Too Well","22","I Almost Do",
+    "We Are Never Ever Getting Back Together","Stay Stay Stay","The Last Time","Holy Ground","Sad Beautiful Tragic",
+    "The Lucky One","Everything Has Changed","Starlight","Begin Again","The Moment I Knew","Come Back... Be Here",
+    "Girl at Home","Ronan"],
+    vault: ["Better Man","Nothing New","Babe","Message in a Bottle","I Bet You Think About Me","Forever Winter",
+      "Run","The Very First Night","All Too Well (10 Minute Version)"]},
+  { name: "1989 (Taylor's Version)", year: 2014, c: "#5fa8d3", songs: [
+    "Welcome to New York","Blank Space","Style","Out of the Woods","All You Had to Do Was Stay","Shake It Off",
+    "I Wish You Would","Bad Blood","Wildest Dreams","How You Get the Girl","This Love","I Know Places","Clean",
+    "Wonderland","You Are in Love","New Romantics"],
+    vault: ["\"Slut!\"","Say Don't Go","Now That We Don't Talk","Suburban Legends","Is It Over Now?"]},
+  { name: "reputation", year: 2017, c: "#3a3a3a", songs: [
+    "...Ready for It?","End Game","I Did Something Bad","Don't Blame Me","Delicate","Look What You Made Me Do",
+    "So It Goes...","Gorgeous","Getaway Car","King of My Heart","Dancing with Our Hands Tied","Dress",
+    "This Is Why We Can't Have Nice Things","Call It What You Want","New Year's Day"]},
+  { name: "Lover", year: 2019, c: "#e48bb3", songs: [
+    "I Forgot That You Existed","Cruel Summer","Lover","The Man","The Archer","I Think He Knows",
+    "Miss Americana & the Heartbreak Prince","Paper Rings","Cornelia Street","Death by a Thousand Cuts",
+    "London Boy","Soon You'll Get Better","False God","You Need to Calm Down","Afterglow","ME!",
+    "It's Nice to Have a Friend","Daylight"]},
+  { name: "folklore", year: 2020, c: "#8d8d86", songs: [
+    "the 1","cardigan","the last great american dynasty","exile","my tears ricochet","mirrorball","seven",
+    "august","this is me trying","illicit affairs","invisible string","mad woman","epiphany","betty","peace",
+    "hoax","the lakes"]},
+  { name: "evermore", year: 2020, c: "#b0703c", songs: [
+    "willow","champagne problems","gold rush","'tis the damn season","tolerate it","no body, no crime",
+    "happiness","dorothea","coney island","ivy","cowboy like me","long story short","marjorie","closure",
+    "evermore","right where you left me","it's time to go"]},
+  { name: "Midnights", year: 2022, c: "#3d4b80", songs: [
+    "Lavender Haze","Maroon","Anti-Hero","Snow on the Beach","You're On Your Own, Kid","Midnight Rain",
+    "Question...?","Vigilante Shit","Bejeweled","Labyrinth","Karma","Sweet Nothing","Mastermind",
+    "The Great War","Bigger Than the Whole Sky","Paris","High Infidelity","Glitch",
+    "Would've, Could've, Should've","Dear Reader","Hits Different","You're Losing Me"]},
+  { name: "The Tortured Poets Department", year: 2024, c: "#9b8f7e", songs: [
+    "Fortnight","The Tortured Poets Department","My Boy Only Breaks His Favorite Toys","Down Bad",
+    "So Long, London","But Daddy I Love Him","Fresh Out the Slammer","Florida!!!","Guilty as Sin?",
+    "Who's Afraid of Little Old Me?","I Can Fix Him (No Really I Can)","loml","I Can Do It With a Broken Heart",
+    "The Smallest Man Who Ever Lived","The Alchemy","Clara Bow","The Black Dog","imgonnagetyouback",
+    "The Albatross","Chloe or Sam or Sophia or Marcus","How Did It End?","So High School","I Hate It Here",
+    "thanK you aIMee","I Look in People's Windows","The Prophecy","Cassandra","Peter","The Bolter","Robin",
+    "The Manuscript"]},
+  { name: "The Life of a Showgirl", year: 2025, c: "#e0632a", songs: [
+    "The Fate of Ophelia","Elizabeth Taylor","Opalite","Father Figure","Eldest Daughter","Ruin the Friendship",
+    "Actually Romantic","Wi$h Li$t","Wood","Cancelled!","Honey","The Life of a Showgirl"],
+    bonus: ["Patient Zero","Cleveland!","Pink Clouding","Babylon"]},
+  { name: "Singles & Soundtracks", year: null, c: "#6f8a62", songs: [
+    "Safe & Sound","Eyes Open","Sweeter Than Fiction","Crazier","Beautiful Ghosts","I Don't Wanna Live Forever",
+    "Only the Young","Christmas Tree Farm","Carolina","Christmases When You Were Mine","Last Christmas"]},
+];
+
+const SONGS = {};
+ALBUMS.forEach((al, ai) => {
+  al.list = [];
+  const add = (t, tag) => { const id = ai + ":" + t; SONGS[id] = { id, t, ai, tag }; al.list.push(id); };
+  al.songs.forEach(t => add(t, ""));
+  (al.vault || []).forEach(t => add(t, "Vault"));
+  (al.bonus || []).forEach(t => add(t, "Bonus"));
+});
+const TOTAL = Object.keys(SONGS).length;
+const TOP = 13;
+const FINAL = 18; // cut rounds stop once this many are left
+
+// ---------- State ----------
+const KEY = "ts-top13-v2";
+let S = fresh();
+function fresh() { return { stage: "intro", albumIdx: 0, picked: [], pool: [], round: 0, cuts: [], duel: null, history: [] }; }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function load() { try { const r = localStorage.getItem(KEY); if (r) return JSON.parse(r); } catch (e) {} return null; }
+const saved = load();
+
+// ---------- Helpers ----------
+const $app = document.getElementById("app");
+const $dock = document.getElementById("dock");
+const $dockInner = document.getElementById("dockInner");
+const esc = s => String(s).replace(/[&<>"']/g, ch => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[ch]));
+const song = id => SONGS[id];
+const albumOf = id => ALBUMS[SONGS[id].ai];
+const ROMAN = ["","I","II","III","IV","V","VI","VII","VIII","IX","X"];
+const ORD = ["","first","second","third","fourth","fifth","sixth","seventh","eighth"];
+function dock(html) { if (html) { $dock.hidden = false; $dockInner.innerHTML = html; } else { $dock.hidden = true; $dockInner.innerHTML = ""; } }
+let toastT;
+function toast(msg) { const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 1800); }
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+const reduced = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+const HEART = `<svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.2 20.3c-3.6-2.6-8.1-6-8-10.2.1-2.6 2-4.3 4.2-4.2 1.7.1 3 1.1 3.8 2.6.9-1.6 2.3-2.7 4.1-2.6 2.2.1 3.8 1.9 3.6 4.4-.3 4-4.4 7.3-7.7 10z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SPRIG = `<svg class="sprig" viewBox="0 0 60 120" aria-hidden="true">
+  <path d="M30 118 C29 90 32 60 30 10" stroke="var(--leaf)" fill="none" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M30 96 C18 92 11 82 13 72 C22 75 28 84 30 96Z" fill="var(--leaf)" opacity=".55"/>
+  <path d="M30 80 C42 76 49 66 47 56 C38 59 32 68 30 80Z" fill="var(--leaf)" opacity=".55"/>
+  <path d="M30 62 C19 58 13 49 15 40 C23 43 29 51 30 62Z" fill="var(--leaf)" opacity=".55"/>
+  <path d="M30 46 C40 42 45 34 43 26 C36 29 31 36 30 46Z" fill="var(--leaf)" opacity=".55"/>
+  <circle cx="30" cy="9" r="5" fill="var(--margin)"/><circle cx="30" cy="9" r="2" fill="#f3ede1"/>
+</svg>`;
+
+// Screen swap with a little paper slide
+let busy = false;
+function swap(dir, fn) {
+  if (reduced || !dir) { fn(); window.scrollTo(0, 0); return; }
+  busy = true;
+  $app.className = "wrap leave-" + dir;
+  setTimeout(() => {
+    fn();
+    window.scrollTo(0, 0);
+    $app.className = "wrap enter-" + dir;
+    setTimeout(() => { $app.className = "wrap"; busy = false; }, 360);
+  }, 190);
+}
+
+// Full-page chapter card that turns like a page
+function chapter({ label, title, note }, then) {
+  const ch = document.getElementById("chapter");
+  const sheet = document.getElementById("sheet");
+  sheet.innerHTML = `${SPRIG}<div class="label">${esc(label)}</div><div class="title huge">${esc(title)}</div>${note ? `<div class="hand">${esc(note)}</div>` : ""}<div class="skip">tap to continue</div>`;
+  ch.className = "chapter show in";
+  busy = true;
+  let done = false;
+  const finish = () => {
+    if (done) return; done = true;
+    then();
+    window.scrollTo(0, 0);
+    ch.className = "chapter show out";
+    setTimeout(() => { ch.className = "chapter"; busy = false; }, reduced ? 10 : 720);
+  };
+  const timer = setTimeout(finish, reduced ? 900 : 2300);
+  ch.onclick = () => { clearTimeout(timer); finish(); };
+}
+
+function go(stage, dir) { S.stage = stage; save(); swap(dir, render); }
+
+// ---------- Screens ----------
+function render() { ({ intro, sweep, cut, duel, done })[S.stage](); }
+
+function intro() {
+  const canResume = saved && saved.stage !== "intro" && saved.stage !== "done";
+  $app.innerHTML = `
+    <div class="label">A very serious ranking exercise</div>
+    <div class="title huge" style="margin-top:12px">Her Top 13</div>
+    <div class="hand" style="margin-top:10px">${TOTAL} songs go in. thirteen come out.</div>
+    <ol class="steps">
+      <li><span class="num">i.</span><div><b>The Sweep</b><span>Go album by album and heart every song you love. Be generous.</span></div></li>
+      <li><span class="num">ii.</span><div><b>The Cutting</b><span>Each round tells you how many to cross out, until ${FINAL} are left. This is where it hurts.</span></div></li>
+      <li><span class="num">iii.</span><div><b>The Showdown</b><span>Two songs at a time, pick one. The journal works out your exact 1 through 13.</span></div></li>
+    </ol>
+    <div class="row">
+      <button class="btn solid" id="start">${canResume ? "Start over" : "Begin →"}</button>
+      ${canResume ? `<button class="btn" id="resume">Pick up where you left off</button>` : ""}
+    </div>
+    <p class="type muted" style="margin-top:22px; font-size:12px">Your progress saves on this device. Close it anytime and come back.</p>`;
+  dock(null);
+  document.getElementById("start").onclick = () => {
+    if (canResume && !confirm("Erase your progress and start fresh?")) return;
+    S = fresh(); S.stage = "sweep"; save();
+    chapter({ label: "Chapter I", title: "The Sweep", note: "heart every song you love" }, render);
+  };
+  if (canResume) document.getElementById("resume").onclick = () => { S = saved; swap("next", render); };
+}
+
+function sweep() {
+  const al = ALBUMS[S.albumIdx];
+  const picked = new Set(S.picked);
+  $app.innerHTML = `
+    <div class="label">Chapter I · The Sweep · ${S.albumIdx + 1} of ${ALBUMS.length}</div>
+    <div class="progress">${ALBUMS.map((_, i) => `<i class="${i < S.albumIdx ? "done" : ""}"></i>`).join("")}</div>
+    <div class="title">${esc(al.name)}</div>
+    <div class="tape" style="--c:${al.c}">${al.year ? al.year : "the extras"}</div>
+    <div class="lines">
+      ${al.list.map(id => {
+        const s = song(id);
+        return `<button class="line ${picked.has(id) ? "on" : ""}" data-id="${esc(id)}">${HEART}<span class="txt">${esc(s.t)}</span>${s.tag ? `<small>${s.tag}</small>` : ""}</button>`;
+      }).join("")}
+    </div>`;
+  $app.querySelectorAll(".line").forEach(b => b.onclick = () => {
+    const id = b.dataset.id, i = S.picked.indexOf(id);
+    if (i >= 0) S.picked.splice(i, 1); else S.picked.push(id);
+    b.classList.toggle("on");
+    save(); sweepDock();
+  });
+  sweepDock();
+}
+function sweepDock() {
+  const last = S.albumIdx === ALBUMS.length - 1;
+  dock(`
+    <button class="btn quiet" id="back">${S.albumIdx === 0 ? "home" : "← back"}</button>
+    <span class="count"><b>${S.picked.length}</b>loved</span>
+    <button class="btn solid" id="next">${last ? "Close the book" : "Next album →"}</button>`);
+  document.getElementById("back").onclick = () => {
+    if (busy) return;
+    if (S.albumIdx === 0) go("intro", "back"); else { S.albumIdx--; go("sweep", "back"); }
+  };
+  document.getElementById("next").onclick = () => {
+    if (busy) return;
+    if (!last) { S.albumIdx++; go("sweep", "next"); return; }
+    if (S.picked.length < TOP) { toast(`Heart at least ${TOP} songs to keep going`); return; }
+    S.pool = S.picked.slice(); S.round = 0;
+    nextPhase();
+  };
+}
+
+// How many to cross out this round
+function cutCount() {
+  const n = S.pool.length;
+  let keep = Math.max(FINAL, Math.ceil(n / 2));
+  if (keep - FINAL <= 4) keep = FINAL; // don't leave a tiny round at the end
+  return n - keep;
+}
+
+function nextPhase() {
+  if (S.pool.length > FINAL) {
+    S.round++; S.cuts = []; S.stage = "cut"; save();
+    const k = cutCount();
+    const first = S.round === 1;
+    chapter({
+      label: first ? "Chapter II" : `Chapter II · Round ${S.round}`,
+      title: first ? "The Cutting" : `The ${ORD[S.round] ? ORD[S.round][0].toUpperCase() + ORD[S.round].slice(1) : S.round + "th"} Cut`,
+      note: `${S.pool.length} songs. cross out ${k}.`
+    }, render);
+  } else {
+    startDuel();
+  }
+}
+
+function cut() {
+  const k = cutCount();
+  const cuts = new Set(S.cuts);
+  const groups = {};
+  S.pool.forEach(id => (groups[song(id).ai] ||= []).push(id));
+  $app.innerHTML = `
+    <div class="label">Chapter II · The Cutting · Round ${ROMAN[S.round] || S.round}</div>
+    <div class="title" style="margin-top:12px">Cross out ${k}</div>
+    <div class="hand" style="margin-top:8px">it's not goodbye, it's just "not top 13"</div>
+    <div class="lines">
+      ${Object.keys(groups).sort((a, b) => a - b).map(ai => `
+        <div class="group-label"><span class="tape" style="--c:${ALBUMS[ai].c}; margin:0">${esc(ALBUMS[ai].name)}</span></div>
+        ${groups[ai].map(id => `<button class="line ${cuts.has(id) ? "cut" : ""}" data-id="${esc(id)}"><span class="txt">${esc(song(id).t)}</span></button>`).join("")}
+      `).join("")}
+    </div>`;
+  $app.querySelectorAll(".line").forEach(b => b.onclick = () => {
+    const id = b.dataset.id, i = S.cuts.indexOf(id);
+    if (i >= 0) S.cuts.splice(i, 1);
+    else {
+      if (S.cuts.length >= k) { toast(`That's all ${k}. Tap a crossed-out song to bring it back.`); return; }
+      S.cuts.push(id);
+    }
+    b.classList.toggle("cut");
+    save(); cutDock();
+  });
+  cutDock();
+}
+function cutDock() {
+  const k = cutCount();
+  const left = k - S.cuts.length;
+  dock(`
+    <button class="btn quiet" id="back">← back</button>
+    <span class="count">${left > 0 ? `<b>${left}</b>more to cut` : `<b style="font-style:italic">done</b>`}</span>
+    <button class="btn solid" id="next" ${left === 0 ? "" : "disabled"}>Turn the page →</button>`);
+  document.getElementById("back").onclick = () => {
+    if (busy) return;
+    if (!confirm("Go back to the albums? Your cuts so far will be undone.")) return;
+    S.albumIdx = ALBUMS.length - 1; S.round = 0; S.cuts = [];
+    go("sweep", "back");
+  };
+  document.getElementById("next").onclick = () => {
+    if (busy || left !== 0) return;
+    const gone = new Set(S.cuts);
+    S.pool = S.pool.filter(id => !gone.has(id));
+    nextPhase();
+  };
+}
+
+// ---------- The Showdown (binary insertion; only the top 13 are kept) ----------
+function startDuel() {
+  const queue = shuffle(S.pool);
+  S.duel = { ranked: [queue.shift()], queue, cur: null, lo: 0, hi: 0, checkedLast: false, total: S.pool.length, done: 1, battles: 0 };
+  S.history = [];
+  nextCandidate();
+  S.stage = "duel"; save();
+  chapter({ label: "Chapter III", title: "The Showdown", note: "two songs. pick one. no take-backs (ok, there's an undo)" }, render);
+}
+function nextCandidate() {
+  const d = S.duel;
+  if (!d.queue.length) { d.cur = null; return; }
+  d.cur = d.queue.shift();
+  d.lo = 0; d.hi = d.ranked.length;
+  d.checkedLast = d.ranked.length < TOP; // once the list is full, first check: does it beat #13?
+}
+function opponentIndex() { const d = S.duel; return d.checkedLast ? (d.lo + d.hi) >> 1 : TOP - 1; }
+function choose(curWins) {
+  const d = S.duel;
+  S.history.push(JSON.stringify(d));
+  d.battles++;
+  if (!d.checkedLast) {
+    d.checkedLast = true;
+    if (!curWins) { d.done++; nextCandidate(); return afterChoice(); }
+    d.hi = TOP - 1;
+  } else {
+    const mid = (d.lo + d.hi) >> 1;
+    if (curWins) d.hi = mid; else d.lo = mid + 1;
+  }
+  if (d.lo >= d.hi) {
+    d.ranked.splice(d.lo, 0, d.cur);
+    if (d.ranked.length > TOP) d.ranked.length = TOP;
+    d.done++;
+    nextCandidate();
+  }
+  afterChoice();
+}
+function afterChoice() {
+  save();
+  if (!S.duel.cur) {
+    S.stage = "done"; save();
+    chapter({ label: "Epilogue", title: "The Thirteen", note: "and the winners are..." }, render);
+  } else {
+    render();
+    if (!reduced) { $app.className = "wrap enter-soft"; setTimeout(() => $app.className = "wrap", 360); }
+  }
+}
+function undo() {
+  if (!S.history.length || busy) return;
+  S.duel = JSON.parse(S.history.pop());
+  save(); swap("back", render);
+}
+
+function duel() {
+  const d = S.duel;
+  const opp = d.ranked[opponentIndex()];
+  const pair = Math.random() < .5 ? [d.cur, opp] : [opp, d.cur]; // shuffle sides so position doesn't bias her
+  const card = id => {
+    const al = albumOf(id);
+    return `<button class="card" style="--c:${al.c}" data-id="${esc(id)}"><span class="pin"></span><div class="t">${esc(song(id).t)}</div><div class="a">${esc(al.name)}</div></button>`;
+  };
+  $app.innerHTML = `
+    <div class="label">Chapter III · The Showdown · Song ${Math.min(d.done + 1, d.total)} of ${d.total}</div>
+    <div class="progress">${Array.from({ length: d.total - 1 }, (_, i) => `<i class="${i < d.done - 1 ? "done" : ""}"></i>`).join("")}</div>
+    <div class="title">Which one?</div>
+    <div class="duel">${card(pair[0])}<div class="or">or</div>${card(pair[1])}</div>
+    <details class="peek"><summary>peek at the list so far</summary>${finalList(d.ranked, true)}</details>`;
+  const cards = [...$app.querySelectorAll(".card")];
+  cards.forEach(b => b.onclick = () => {
+    if (busy) return;
+    busy = true;
+    b.classList.add("won");
+    cards.find(c => c !== b).classList.add("lost");
+    setTimeout(() => { busy = false; choose(b.dataset.id === d.cur); }, reduced ? 0 : 480);
+  });
+  dock(`
+    <button class="btn quiet" id="undo" ${S.history.length ? "" : "disabled"}>undo</button>
+    <span class="count"><b>${d.battles}</b>picks</span>
+    <button class="btn quiet" id="restart">start over</button>`);
+  document.getElementById("undo").onclick = undo;
+  document.getElementById("restart").onclick = () => { if (confirm("Start completely over?")) { S = fresh(); go("intro", "back"); } };
+}
+
+function finalList(ids, small) {
+  return `<ol class="final ${small ? "small" : ""}">${ids.map((id, i) => {
+    const al = albumOf(id);
+    return `<li style="animation-delay:${small ? 0 : (ids.length - 1 - i) * 0.12 + 0.2}s"><span class="n">${i + 1}.</span><div><div class="t">${esc(song(id).t)}</div>${small ? "" : `<div class="a">${esc(al.name)}</div>`}</div></li>`;
+  }).join("")}</ol>`;
+}
+
+function done() {
+  const top = S.duel.ranked;
+  $app.innerHTML = `
+    <div class="label">Epilogue</div>
+    <div class="title huge" style="margin-top:12px">The Thirteen</div>
+    <div class="hand" style="margin-top:8px">settled in ${S.duel.battles} showdowns</div>
+    ${finalList(top, false)}
+    <div class="row">
+      <button class="btn solid" id="copy">Copy the list</button>
+      <button class="btn quiet" id="again">do it again</button>
+    </div>`;
+  dock(null);
+  const text = "My Taylor Swift Top 13\n\n" + top.map((id, i) => `${i + 1}. ${song(id).t}`).join("\n");
+  document.getElementById("copy").onclick = async () => {
+    try { await navigator.clipboard.writeText(text); toast("Copied"); } catch (e) { prompt("Copy this:", text); }
+  };
+  document.getElementById("again").onclick = () => { if (confirm("Start a brand new ranking?")) { S = fresh(); go("intro", "back"); } };
+}
+
+render();
+</script>
+</body>
+</html>
